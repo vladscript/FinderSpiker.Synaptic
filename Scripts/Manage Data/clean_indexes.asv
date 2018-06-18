@@ -1,0 +1,3 @@
+% Function to Select Indexes A of B in C
+function Clean_Onsets=clean_indexes(StaySyn,AllSyn,All_Onsets)
+AllINdexes=1_n
