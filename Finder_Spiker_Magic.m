@@ -1,7 +1,4 @@
 %% GENERAL ****************************************************
-% Beta 
-% v1.1:     03-8-17: bugs/opt coding/ fasten(?)
-% v1:       26-7-17: automatic detection; preliminar results
 % built: 11-7-17
 %         It detects post synaptic-like waveforms signals
 %         By sparse deconvolution from y=R*d+n, where:
@@ -12,28 +9,44 @@
 clc;
 clear;
 close all;
+versionFS=1.1; % 26/06/18
+%% Global Variables
+global x;
+% global t;
+global fs;
+global X_SYN;
+global XD;
+global Intervals;
+global WT;
+global x_syn;
+global x_detrended
 %% Get Scrripts Directory
 Update_Directories
 %% Load & Display WHOLE DATA ***********************************************
 % Load Signal, Sampling Frequency [Hz]& File Name:
 [x,fs,FileName,UnitsName]=loadEPSCabf;      % Read Signal from ABF file                
 ts=1/fs;                                    % Sampling period [s]
-t=linspace(0,1000*length(x)*ts,length(x));  % Time Vector [ms]
+% t=linspace(0,1000*length(x)*ts,length(x));  % Time Vector [ms]
 %% Read COndition's Names & Times
 [NC,Cond_Names,Intervals]=Get_Conditions_Details(length(x),fs);
 
 %% Start Processing **************************************************
 % Detection & Feature Extraction
 h=waitbar(0,'Processing...');
+tic;
 for c=1:NC
     % Read Data Condition Indexes:
-    Start=round(Intervals(c,1)*60*fs+1);
-    End=round(Intervals(c,2)*60*fs);
+    Start=round(Intervals(c,1)*60*fs+1);        % SAMPLE: discrete domain
+    End=round(Intervals(c,2)*60*fs);            % SAMPLE: discrete domain
     % Process Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    [GF{c},X_SYN{c},XD{c},RAR{c},STDnoise{c},LAMBDASS_WIND{c}]=DetectionProcessing(x(Start:End),t(Start:End),fs);
+    [GF{c},X_SYN{c},XD{c},RAR{c},STDnoise{c},LAMBDASS_WIND{c}]=DetectionProcessing(x(Start:End),fs,Start);
     waitbar(c/NC)
 end
+ProcessingTime=toc;
 delete(h)
+%% Get Vectorized Signals
+x_syn=get_synaptic_signal(Intervals,X_SYN,numel(x),fs);
+x_detrended=get_synaptic_signal(Intervals,XD,numel(x),fs);
 %% Threhshold Parameters of GF/STDnoise/LAMBDASS
 % Onset/Amplitude-vs-Noise/ Rise & Fall Time Ratio
 % GF: onset|amplitude|rise|fall
@@ -71,31 +84,81 @@ if ~isempty(PeakLamb)
         Clean_Amplitudes=clean_indexes(StayLamb,AllLamb,Clean_Amplitudes);
         Clean_Rises=clean_indexes(StayLamb,AllLamb,Clean_Rises);
         Clean_Fallens=clean_indexes(StayLamb,AllLamb,Clean_Fallens);
-        disp('Cleaned')
+        disp('>> Lambdas Cleaned')
     else
         disp('Lambda Parameter: OK')
     end
 end
+% Amplitude Threshold : maximum std of noise
+Clean_OnsetsA= Clean_Onsets(  Clean_Amplitudes<min(All_NoiseStd) );
+Clean_OnsetsA= Clean_Onsets(  Clean_Amplitudes<-8 );
+
+% Fallen Rise  Ratio
+FRR=Clean_Fallens./Clean_Rises;
+Clean_OnsetsB= Clean_Onsets( FRR>=1.5 );
+Clean_A= Clean_Amplitudes( FRR>=1.5 );
 
 %% Preliminar Results
-WT=10;
+WT=10; % Window in [ SECONDS ]
 plot_window_histogram(All_Onsets,WT,Cond_Names,Intervals,fs);
-plot_window_histogram(Clean_Onsets,WT,Cond_Names,Intervals,fs);
+plot_window_histogram(Clean_OnsetsA,WT,Cond_Names,Intervals,fs);
+plot_window_histogram(Clean_OnsetsB,WT,Cond_Names,Intervals,fs);
 
 %% MANUAL MODE
+% Activate Manual Editor
+% Display: raw signal and processed signal
+% Manipulate and save
 
+%% Save Processing Intel
+% Experiment:                       FileName
+% Experiment Length:                sum(diff(Intervals'))
+% Detected Synatics Automatically:  numel(Clean_Amplitudes)
+% Time of Processing:               ProcessingTime [sec]
+% Overlapping Size:                 OLsamples
+% Window Sampling:                  SW
+% Size of the Response:             L
+Load_SP_Settings;
+T=table( sum(diff(Intervals')), numel(Clean_Amplitudes),...
+    ProcessingTime,OLsamples,SW,L,versionFS);
+T.Properties.VariableNames={'Experiment_Length','Synaptics','TimeProcessing',...
+    'Overlapping','WindowProcessing','LengthResponse','FSversion'};
+
+ActualDir=pwd;
+Slashes=find(ActualDir=='\');
+SaveDir=[ActualDir(1:Slashes(end)),'Log Processing\'];
+% Save Table in Resume Tables of the Algorithm Latency*********
+if isdir(SaveDir)
+    writetable(T,[SaveDir,FileName(1:end-4),'.csv'],...
+        'Delimiter',',','QuoteStrings',true);
+    disp('Saved Log Processgin Intel')
+else % Create Directory
+    disp('Directory >Log Processing< created')
+    mkdir(SaveDir);
+    writetable(T,[SaveDir,FileName(1:end-4),'.csv'],...
+        'Delimiter',',','QuoteStrings',true);
+    disp('Saved Log Processgin Intel')
+end
 
 %% Saving Pre_Results
-% for c=1:NC
-%     FileSave=[FileName(1:end-4),'-',Cond_Names{c},'.xls']; % MODIFY TO CSV
-%     T=table(Tdetection{c}(:,1),Tdetection{c}(:,2),Tdetection{c}(:,3),...
-%         Tdetection{c}(:,4),Tdetection{c}(:,5),Tdetection{c}(:,6));
-%     %OKonsets',AMP',RT',TD',lambdass*ones(length(OKonsets),1),SNRbyWT(w)*ones(length(OKonsets),1)
-%     T.Properties.VariableNames={'Onset_ms',['Amplitude_',UnitsName],'RiseTime_ms',...
-%         'DecayTime_ms','lambda','SNR_dB'};
-%     writetable(T,FileSave);
-% end
-% disp('... done')
+ActualDir=pwd;
+Slashes=find(ActualDir=='\');
+SaveDir=[ActualDir(1:Slashes(end)),'Processed Data\'];
+if isdir(SaveDir)
+    save([SaveDir,FileName,'.mat'],'x',...
+    'fs','FileName','Cond_Names','Intervals',...
+    'GF','X_SYN','XD','RAR','STDnoise','LAMBDASS_WIND');
+    disp('[RAW DATA SAVED]')
+    disp('[PROCESSED DATA SAVED]')
+else % Create Directory
+    disp('Directory > \Processed Data < created')
+    mkdir(SaveDir);
+    save([SaveDir,FileName,'.mat'],'x','t',...
+    'fs','FileName','Cond_Names','Intervals',...
+    'GF','X_SYN','XD','RAR','STDnoise','LAMBDASS_WIND');
+    disp('[RAW DATA SAVED]')
+    disp('[PROCESSED DATA SAVED]')
+end
+
 %% Review Results
 % for c=1:NC
 %     % Read Data Indexes:
@@ -107,9 +170,3 @@ plot_window_histogram(Clean_Onsets,WT,Cond_Names,Intervals,fs);
 %     % Measure of Events
 %     % ... [missing]
 % end
-%% Save Stuff
-% ResultsTable=array2table(T);
-% ResultsTable.Properties.VariableNames={'Onset_ms','Drive_Amplitude','lambda','SNR_dB'};
-% FileDirSave=pwd;
-% save([FileDirSave,'\Results','\ExperimentA.mat'],'LAMBDAS','TAUS',...
-%     'D','XEST','XESTwBASAL','fs');
