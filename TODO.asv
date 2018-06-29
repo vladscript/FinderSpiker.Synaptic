@@ -6,24 +6,13 @@
 %   Activate Editor->Deconvolve Manually [KeyBoard]                     ***
 %   Up and Down Lambda
 %   Update Signal
-%   display N samples
-%   display S synaptics detected
 %% TASKS:
 % MANUAL MODE:
-% Processing: 
-% Exit Function: Save Synaptics Signal:
-% X_SYN=cut_signal(x_syn,Intervals)
+
+% Processing
 
 
-% ****************************************************
-% Time Processing Issues:
-% Save with Time&Date
-% use std(noise) of NON FIEXED DETRENDED SIGNAL
-% deconvolution mode
-% Length of the Processing Window
-% Overlapping Size
-% Length Response
-% ##########################################################
+
 % Get Onsets & Parameters after Manual Mode:
 % Applying Filter such as:
 % > Amplitude (sigma noise)
@@ -34,12 +23,13 @@
 % From COMPLETE signal:
 %   Cursor activate a Zomm According to the Intervals of The Condition
 
-% OPTIONAL {no excatly necessary}
+% OPTIONA
 %   Cursor to Delete Manually a Synaptic
 % Delete plot_data_from_histogram
 %       plot onsets of the detected ones-> Clean Ones
 % Manual Funtion
-% Personlize Colors
+% use std(noise) of NON FIEXED DETRENDED SIGNAL
+%       Personlize Colors
 
 
 %% Already in Github

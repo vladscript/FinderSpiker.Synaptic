@@ -90,7 +90,7 @@ end
             disp('Showing data ...')
             ActualTime=ActualBar.Position(1); % MINUTES OF THE EXPERIMENT
             timeframe=ActualTime*60*fs;
-            Plot_Raw_Processed_Data(timeframe);
+            Plot_Raw_Processed_Data(timeframe,WT);
         end
         %Plot_Figure=true;
         % Initialize Script to Plot Data

@@ -18,8 +18,10 @@ global X_SYN;
 global XD;
 global Intervals;
 global WT;
-global x_syn;
-global x_detrended
+global lambdacounter;
+global lambdaglobal; %#ok<NUSED>
+global rglobal; %#ok<NUSED>
+lambdacounter=0;
 %% Get Scrripts Directory
 Update_Directories
 %% Load & Display WHOLE DATA ***********************************************
@@ -44,8 +46,16 @@ for c=1:NC
 end
 ProcessingTime=toc;
 delete(h)
+% #################################################################
+%% Once you Re-Loaded data from .mat file, run these sections:
+% #################################################################
+% #################################################################
 %% Get Vectorized Signals
+global x_syn;
+global x_detrended;
+% Denoised Sparsed Synaptics
 x_syn=get_synaptic_signal(Intervals,X_SYN,numel(x),fs);
+% Detrended Original Signal
 x_detrended=get_synaptic_signal(Intervals,XD,numel(x),fs);
 %% Threhshold Parameters of GF/STDnoise/LAMBDASS
 % Onset/Amplitude-vs-Noise/ Rise & Fall Time Ratio
@@ -117,6 +127,11 @@ plot_window_histogram(Clean_OnsetsB,WT,Cond_Names,Intervals,fs);
 % Overlapping Size:                 OLsamples
 % Window Sampling:                  SW
 % Size of the Response:             L
+dtime=clock;
+FileTime='_';
+for d=1:6
+    FileTime=[FileTime,num2str(round(dtime(d)))];
+end
 Load_SP_Settings;
 T=table( sum(diff(Intervals')), numel(Clean_Amplitudes),...
     ProcessingTime,OLsamples,SW,L,versionFS);
@@ -128,13 +143,13 @@ Slashes=find(ActualDir=='\');
 SaveDir=[ActualDir(1:Slashes(end)),'Log Processing\'];
 % Save Table in Resume Tables of the Algorithm Latency*********
 if isdir(SaveDir)
-    writetable(T,[SaveDir,FileName(1:end-4),'.csv'],...
+    writetable(T,[SaveDir,FileName(1:end-4),FileTime,'.csv'],...
         'Delimiter',',','QuoteStrings',true);
     disp('Saved Log Processgin Intel')
 else % Create Directory
     disp('Directory >Log Processing< created')
     mkdir(SaveDir);
-    writetable(T,[SaveDir,FileName(1:end-4),'.csv'],...
+    writetable(T,[SaveDir,FileName(1:end-4),FileTime,'.csv'],...
         'Delimiter',',','QuoteStrings',true);
     disp('Saved Log Processgin Intel')
 end
