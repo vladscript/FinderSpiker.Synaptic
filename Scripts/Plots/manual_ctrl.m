@@ -1,5 +1,11 @@
-% Function to Control Manually
-% Signal processing of EPSC
+% Function to Control Manually, called from:
+% [Plot_Raw_Processed_Data.m]
+% Signal processing of EPSC (manual command):
+% Arrow Right: moves to next samples
+% Arrow Left: moves to previous samples
+% Arrow Up: Increase Lambda and Process Actual Data int he Axis
+% Arrow Down: Decrease Lambda and Process Actual Data int he Axis
+
 function manual_ctrl(object,event)
 %% Setup
 % Global Variables
@@ -35,7 +41,7 @@ AxisDown=object.Children(1);
 AxisNoise=AxisDown.Children(1);
 AxisProcSyn=AxisDown.Children(2);
 AxisDetrenX=AxisDown.Children(3);
-TitleUp=AxisUp.Title.String;
+% TitleUp=AxisUp.Title.String;
 % AxisNoise=AxisDown
 % set(AxisDown,'nextplot','replace');
 % =plot([0,0],[0,0],'Color','.r');
@@ -160,7 +166,7 @@ end
             AxisDown.Title.String=['\lambda = ',num2str(lambdaglobal),' N= ',num2str(numel(x_det))];
             AxisDown.Title.FontSize=9;
         else
-            disp('Get a Wider Window to Prcess or There is NO signal')
+            disp('Get a Wider Window to Process or There is NO detrended signal')
         end
     end
  end

@@ -1,21 +1,11 @@
 %% READY TO GO
-% MANUAL MODE:
-%   Display Data from histogram:
-%   Show Threshold: Standard Deviation of Noise 
-% MANUAL MODE: Processing:
-%   Activate Editor->Deconvolve Manually [KeyBoard]                     ***
-%   Up and Down Lambda
-%   Update Signal
-%   display N samples
-%   display S synaptics detected
-%% TASKS:
-% MANUAL MODE:
 % Processing: 
 % Exit Function: Save Synaptics Signal:
 % X_SYN=cut_signal(x_syn,Intervals)
-
-
-% ****************************************************
+% SAVE SIGNALS AS CELLS!!!!!!
+%% TASKS:
+% MANUAL MODE: OK->
+% ************************************************************************
 % Time Processing Issues:
 % Save with Time&Date
 % use std(noise) of NON FIEXED DETRENDED SIGNAL
@@ -23,7 +13,7 @@
 % Length of the Processing Window
 % Overlapping Size
 % Length Response
-% ##########################################################
+% #######################################################################
 % Get Onsets & Parameters after Manual Mode:
 % Applying Filter such as:
 % > Amplitude (sigma noise)
@@ -54,4 +44,12 @@
 %   Highlight Bar from Histogram
 %   Plot_Raw_Processed_Data-> Cut Data instead of plotting Everybit
 %   Display Data from histogram: OK
+%   Activate Editor->Deconvolve Manually [KeyBoard]                     ***
+%   Show Threshold: Standard Deviation of Noise 
+%   Up and Down Lambda
+%   Update Signal
+%   display N samples
+%   display S synaptics detected
 % MAKE GLOBAL Variables(space issue)
+
+% MANUAL MODE: Processing:

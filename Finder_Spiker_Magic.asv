@@ -7,12 +7,12 @@
 %         d: Driver Signal or Onset indicator
 %         n: noise
 % Input
-%   abf file from pCLAMP v2.X Post Synpatic Currents
+%   abf file from v
 %   Intervlas
 % Output
-%   Diplasy N synaptics @ WT=10 s window
-%   Saved dataset @ Processed data saves data from the Intervals of Processing
-%   Saves Log of Time Processing and Events
+% Diplasy N synaptics @ WT=10 s window
+% Saved data @ Processed data 
+% saves data from the Intervals of Processing
 clc;
 clear;
 close all;
@@ -28,7 +28,6 @@ global WT;
 global lambdacounter;
 global lambdaglobal; %#ok<NUSED>
 global rglobal; %#ok<NUSED>
-global FileName;
 lambdacounter=0;
 %% Get Scrripts Directory
 Update_Directories
@@ -168,7 +167,7 @@ ActualDir=pwd;
 Slashes=find(ActualDir=='\');
 SaveDir=[ActualDir(1:Slashes(end)),'Processed Data\'];
 if isdir(SaveDir)
-    save([SaveDir,FileName(1:end-4),'.mat'],'x',...
+    save([SaveDir,FileName,'.mat'],'x',...
     'fs','FileName','Cond_Names','Intervals',...
     'GF','X_SYN','XD','RAR','STDnoise','LAMBDASS_WIND');
     disp('[RAW DATA SAVED]')
@@ -176,7 +175,7 @@ if isdir(SaveDir)
 else % Create Directory
     disp('Directory > \Processed Data < created')
     mkdir(SaveDir);
-    save([SaveDir,FileName(1:end-4),'.mat'],'x','t',...
+    save([SaveDir,FileName,'.mat'],'x','t',...
     'fs','FileName','Cond_Names','Intervals',...
     'GF','X_SYN','XD','RAR','STDnoise','LAMBDASS_WIND');
     disp('[RAW DATA SAVED]')

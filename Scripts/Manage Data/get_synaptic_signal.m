@@ -4,6 +4,8 @@
 %   X_SYN: cell of N Conditions
 %   N: Number of elemnts to Vectorize
 %   fs: Sampling Frequency
+% Output
+%   x_syn: concatenated vector of the cell data
 function x_syn=get_synaptic_signal(Intervals,X_SYN,N,fs)
     x_syn=zeros(N,1);
     [NC,~]=size(Intervals);

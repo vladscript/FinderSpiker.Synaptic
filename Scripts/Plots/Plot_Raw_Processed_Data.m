@@ -1,4 +1,5 @@
 %% INPUT
+% Global Inputs
 % x: raw signal
 % Intervals
 % X_SYN->   x_syn: clenasynaptics
@@ -12,7 +13,8 @@ function Plot_Raw_Processed_Data(timeframe,WTinit)
 figHandles = findobj('Type', 'figure');
 for n=1:numel(figHandles)
     if strcmp(figHandles(n).Name,'CHECK SIGNALS')
-        close(figHandles(n));
+        delete(figHandles(n));
+        disp('Re-Plot')
     end        
 end
 
@@ -40,7 +42,8 @@ lambdacounter=0; % Initialize
 % handles.x_det=x_detrended;
 %% Plot Data
 % Plot_Data=figure('keypressfcn',@(object,event)manual_ctrl(object,event,handles));
-Plot_Data=figure('keypressfcn',@(object,event)manual_ctrl(object,event));
+Plot_Data=figure('keypressfcn',@(object,event)manual_ctrl(object,event),...
+         'CloseRequestFcn',@save_and_exit);
 Plot_Data.Name='CHECK SIGNALS';
 AxisUp=subplot(2,1,1);
 AxisDown=subplot(2,1,2);
