@@ -16,7 +16,7 @@
 clc;
 clear;
 close all;
-versionFS=1.1; % 26/06/18
+versionFS=2.251; % 04/07/18
 %% Global Variables
 global x;
 % global t;
@@ -120,8 +120,8 @@ Clean_A= Clean_Amplitudes( FRR>=1.5 );
 %% Preliminar Results
 WT=10; % Window in [ SECONDS ]
 plot_window_histogram(All_Onsets,WT,Cond_Names,Intervals,fs);
-plot_window_histogram(Clean_OnsetsA,WT,Cond_Names,Intervals,fs);
-plot_window_histogram(Clean_OnsetsB,WT,Cond_Names,Intervals,fs);
+% plot_window_histogram(Clean_OnsetsA,WT,Cond_Names,Intervals,fs);
+% plot_window_histogram(Clean_OnsetsB,WT,Cond_Names,Intervals,fs);
 
 %% MANUAL MODE
 % Activate Manual Editor
@@ -160,7 +160,7 @@ else % Create Directory
     mkdir(SaveDir);
     writetable(T,[SaveDir,FileName(1:end-4),FileTime,'.csv'],...
         'Delimiter',',','QuoteStrings',true);
-    disp('Saved Log Processgin Intel')
+    disp('Saved Log Processing Intel')
 end
 
 %% Saving Pre_Results

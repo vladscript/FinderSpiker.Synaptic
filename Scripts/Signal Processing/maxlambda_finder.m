@@ -17,7 +17,7 @@ function [D,LAMBDASS]=maxlambda_finder(XD,FR,varargin)
 if isempty(varargin) % [+&- Mode]
     deconmode='posandneg';
 elseif varargin{1}==0 % [++ Mode]
-    deconmode='onlypos';
+    deconmode='onlyneg';
 elseif varargin{1}==1 % [~=0 Mode]
     deconmode='difftozero';
 end
@@ -65,9 +65,9 @@ for c=1:C
                 disp(' [*] Lambda searcher Driver Mode: [+] and [-] ')
             end
     %% Second Case: Only Postive Driver Signal
-        case 'onlypos'
+        case 'onlyneg'
             d=[]; % Initial Empty Drive
-            while isempty(d(d>0))
+            while isempty(d(d<0))
                 if lambda_pow2>0
                     lambda=2^lambda_pow2;
                 else
@@ -76,7 +76,7 @@ for c=1:C
                 [d,~,~]=magic_sparse_deconvolution(x,r,lambda);
                 % d=smooth(d)';%  SMOOTH DRIVER
                 lambda_pow2=lambda_pow2-1;
-                disp(' [*] Lambda searcher Driver Mode: [+] ')
+                disp(' [*] Lambda searcher Driver Mode: [-] ')
             end
     %% Third Case: Just Different to Zero Driver Signal
         case 'difftozero'  

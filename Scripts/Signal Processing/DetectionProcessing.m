@@ -53,29 +53,56 @@ for w=1:floor(NW)
     % DETRENDING
     xbasal=smooth(xc,length(xc),'loess');
     xcd=xc-xbasal;  
-    % DENOISE
-    [xdenoised,xcdU]=denoise_wavelet(-xcd');
-    % Turn it upside down:
-    xcdU=-xcdU;
-    xdenoised=-xdenoised;
-    noisex=xcd-xdenoised';
+    
+    % DENOISE with FIXED DETRENDING v.1. #########################
+    % [xdenoised,xcdU]=denoise_wavelet(-xcd');
+    % % Turn it upside down:
+    % xcdU=-xcdU;
+    % xdenoised=-xdenoised;
+    % noisex=xcd-xdenoised';
+    
+    % DENOISE WITHOUT DEtRENDING FIXING v2.2 #######################
+    [xdenoised,noisex]=mini_denoise(xcd');
+    
     NoiseStD=std(noisex);
-    % FEATURE EXTRACTION
-    % [SkewSignal(w),SkewNoise(w),SNRbyWT(w),ABratio(w)]=feature_extraction(xdenoised,noisex);
+    
+    % Amplitude Checking:
+    AmpsPeaks=findpeaks(xdenoised);
+    if isempty(AmpsPeaks); AmpsPeaks=max(xdenoised); end;
+    AmpsValleys=findpeaks(-xdenoised);
+    if isempty(AmpsValleys); AmpsValleys=min(xdenoised); end;
+    OKAnalyze=false;
+    if abs(max(AmpsPeaks))<abs(max(AmpsValleys))
+        if abs(max(AmpsValleys))>NoiseStD
+            OKAnalyze=true;
+        end
+    end
+    
+    % Initialize SYnaptic Clean Signal:
     x_synaptic=zeros(size(xdenoised));
     %% Accept Window to Process
-    if skewness(noisex,0)>skewness(xdenoised,0) % Synaptic-like Response Detected  FIRST STEP
+    if and(skewness(noisex,0)>skewness(xdenoised,0),OKAnalyze) % Synaptic-like Response Detected  FIRST STEP
+        % Version 2.1
+        [xdenoised,xcdU]=denoise_wavelet(-xcd');
+        % Turn it upside down:
+        xcdU=-xcdU;
+        xdenoised=-xdenoised;
+        
+        noisex=xcdU-xdenoised;
+        NoiseStD=std(noisex);
         % AR process Estimation
         [r,~,~]=AR_Estimation(xcdU,p,fs,L,taus_0);
         % Magical Sparse Deconvolution 
-        [d,LAMBDAS(w)]=maxlambda_finder(xcdU,r);
+        [d,LAMBDAS(w)]=maxlambda_finder(xcdU,r); %v2.25
+        % [d,LAMBDAS(w)]=maxlambda_finder(xcdU,r,0); %v3.1
+        %[d,LAMBDAS(w)]=maxlambda_finder(xcdU,r,1); %v4.1
         % d=smooth(d)';%  SMOOTH DRIVER [OPTIONAL MAYBE]
         % x_sparse=sparse_convolution(d,r);
         % CLEAN DRIVER
         [dUP,~,~,~,~,~]=analyze_driver_signal(-d,r,-xcdU,-xdenoised,1); dDown=-dUP;
         % GET CLEAN SIGNAL
         x_sparse=sparse_convolution(dDown,r);
-%         %% PLOT RESULTS PREVIEW ######################################
+%         %% PLOT RESULTS PREVIEW ##############(1/2)####################
 %         subplot(2,1,1)
 %         plot(xc)
 %         axis tight; grid on;
@@ -147,10 +174,11 @@ for w=1:floor(NW)
             SamplesDelete=setdiff([1:numel(x_sparse)],SaveSamples);
             x_sparse(SamplesDelete)=0;
         end
-%         %% PLOT RESULT COMLPEMENT ################################
+%         %% PLOT RESULT COMLPEMENT ########(2/2)######################
 %         subplot(2,1,2); hold on;
 %         plot(x_synaptic,'m','LineWidth',2);
 %         hold off;
+%           disp('Something')
     %% Reject Window to Process
     else
         % NOISE LESS SKEWER THAN SIGNAL (Negatively Speaking)
@@ -158,6 +186,7 @@ for w=1:floor(NW)
         dDown=zeros(size(xcd))';
         r=zeros(1,L);
         LAMBDAS(w)=0;
+        xcdU=xcd';
     end
     disp(['>>>>>>>>>>>>>>>>> Signal ++++++++++++++++++++++ ',num2str(w),'/',num2str(floor(NW))])
     %% Save OUTPUTS ***********************************************

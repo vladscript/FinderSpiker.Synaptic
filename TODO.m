@@ -1,18 +1,18 @@
 %% READY TO GO
-% Processing: 
-% Exit Function: Save Synaptics Signal:
-% X_SYN=cut_signal(x_syn,Intervals)
-% SAVE SIGNALS AS CELLS!!!!!!
+
 %% TASKS:
+% Should I save the vector x????
+% Issues of New Files ***
+
 % MANUAL MODE: OK->
 % ************************************************************************
 % Time Processing Issues:
-% Save with Time&Date
 % use std(noise) of NON FIEXED DETRENDED SIGNAL
 % deconvolution mode
 % Length of the Processing Window
 % Overlapping Size
 % Length Response
+% Data Sets: ------
 % #######################################################################
 % Get Onsets & Parameters after Manual Mode:
 % Applying Filter such as:
@@ -51,5 +51,9 @@
 %   display N samples
 %   display S synaptics detected
 % MAKE GLOBAL Variables(space issue)
-
 % MANUAL MODE: Processing:
+% Processing: 
+% Exit Function: Save Synaptics Signal:
+% X_SYN=cut_signal(x_syn,Intervals)
+% SAVE SIGNALS AS CELLS!!!!!!
+%   Save with Time&Date
