@@ -64,7 +64,7 @@ plot(AxisDown,tmin_Cut,x_syn_cut,'LineWidth',2,'Color','k');
 plot(AxisDown,[0,numel(x_syn_cut)],-[stdnoise,stdnoise],'-.r');
 % Axis & Grid
 grid(AxisDown,'on')
-axis(AxisDown,[tmin_Cut(1),tmin_Cut(end),min(x_cut),max(x_cut)]);
+axis(AxisDown,[tmin_Cut(1),tmin_Cut(end),min(x_det_cut),max(x_det_cut)]);
 %% Setting Figure Appearance
 AxisUp.XTickLabel=[];
 AxisUp.Title.String='EPSC Detection';
