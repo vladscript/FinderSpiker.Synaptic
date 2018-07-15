@@ -1,17 +1,24 @@
 %% READY TO GO
-
-%% TASKS:
-% Should I save the vector x????
-% Issues of New Files ***
-
-% MANUAL MODE: OK->
 % ************************************************************************
 % Time Processing Issues:
-% use std(noise) of NON FIEXED DETRENDED SIGNAL
-% deconvolution mode
-% Length of the Processing Window
-% Overlapping Size
-% Length Response
+% use std(noise) of NON FIEXED DETRENDED SIGNAL->DONE
+% deconvolution mode->DONE
+% Length of the Processing Window->DONE
+% Overlapping Size->DONE
+% Length Response->DONE
+% NO SAVE vector t-> Error
+%% TASKS:
+
+% get skewnnes of samples just below POSITIVE standard DEV-NOISE >>Next
+% Version
+% Should I save the vector x????
+% Re plot histogram from synaptics Signal after closign manual mode
+% Downsample Signal to Make it Faster
+% Processing Parameters: Rate of Synaptics vs Time of Processing
+% Linka X axis between raw data and periohistogram
+% Integrate Several Conditios in Sevral .abf Files
+% MANUAL MODE: OK->
+
 % Data Sets: ------
 % #######################################################################
 % Get Onsets & Parameters after Manual Mode:

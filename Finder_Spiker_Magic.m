@@ -16,7 +16,7 @@
 clc;
 clear;
 close all;
-versionFS=2.252; % 04/07/18
+versionFS=2.251; % 04/07/18
 %% Global Variables
 global x;
 % global t;
@@ -176,7 +176,7 @@ if isdir(SaveDir)
 else % Create Directory
     disp('Directory > \Processed Data < created')
     mkdir(SaveDir);
-    save([SaveDir,FileName(1:end-4),'.mat'],'x','t',...
+    save([SaveDir,FileName(1:end-4),'.mat'],'x',...
     'fs','FileName','Cond_Names','Intervals',...
     'GF','X_SYN','XD','RAR','STDnoise','LAMBDASS_WIND');
     disp('[RAW DATA SAVED]')

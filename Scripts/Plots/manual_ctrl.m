@@ -138,7 +138,7 @@ end
         AxisNoise.XData=[tmin_cut(1),tmin_cut(end)];
     end
     function process_data()
-        if numel(x_det(x_det<0))>1.5*L
+        if numel(x_det(x_det<0))>1*L
             if lambdacounter==0
                 AxisDown.Title.String='Processing ... ';
                 lambdacounter=lambdacounter+1; % Increase Counter Lambda
